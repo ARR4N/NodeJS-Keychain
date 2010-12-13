@@ -25,7 +25,7 @@ var	fn = require('../functions.js'),
 
 exports.model = {
 
-    properties : ['user', 'user_set', 'domain', 'domain_set', 'pass', 'userConfirmed'],
+    properties : ['user', 'user_set', 'domain', 'domain_set', 'pass'],
 
     cast : {},
 
