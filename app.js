@@ -26,6 +26,7 @@ var	express = require('express'),
 		fn = require('./functions.js'),
 		hash = fn.hash;
 
+//Add Mongoose models and make them available through db.Model-name
 var models = ['user', 'pass'];
 var modelJs = [];
 
@@ -61,10 +62,12 @@ function getPass(req, res){
 	var pass = req.param('pass');
 	var domain = req.param('domain');
 	
+	//Finds and returns the first record with the user_id provided - using the return value when nothing is found throws errors so that is used as a check for no user found
 	db.User.get(db, user, function(u){
 		try {
-			if(!u.checkPassword(pass)) throw 0;
+			if(!u.checkPassword(pass)) throw 0; //will also throw if u is null/undefined
 			
+			//Same idea as db.User.get
 			db.Pass.get(db, user, domain, function(p){
 				try {
 					sendPass(req, res, p.getPass(pass));
