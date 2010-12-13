@@ -27,11 +27,14 @@ NodeJs - www.nodejs.org
 Express - www.expressjs.com
 MongoDB - www.mongodb.com
 Mongoose - www.learnboost.com/mongoose/
+OpenSSL aes-cbc-256 cipher
 
 Goals
 -----
-NodeJS-Keychain is intended to be a highly secure and distributable keychain web service for creation and storage of random, long passwords. Security is managed in a trap-door manner such that a single user/password combination is required to unlock a given key but all other data is entirely transparent; the purpose of this is to allow storage in the cloud.
+NodeJS-Keychain is intended to be a highly secure and distributable keychain web service for creation and storage of random, long passwords. Security is managed in a trap-door manner such that a single user/password combination is required to unlock a given key but all other data is entirely protected by hashes & salts; the purpose of this is to allow storage in the cloud.
 
 The encryption scheme is inspired by: http://wayner.org/node/21
 
 Usernames are stored as hashes and each user's master password as a hash of 'user_hash|password|salt'. All keys are referenced by a domain (also hashed) and are then encrypted using AES (CBC) 256 bit with the hash of 'password|user_hash|domain_hash' as the key. All hashes are SHA-512 and the one-way mechanism of cryptographic hashes makes public access to the encrypted keychain relatively safe.
+
+Caveat: the trap-door mechanism means that forgetting the master password results in permanent loss of the encrypted data (well... assuming the cipher is good and implemented properly).
