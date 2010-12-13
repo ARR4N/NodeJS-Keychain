@@ -20,11 +20,7 @@ This file is part of NodeJS-Keychain (https://github.com/aschlosberg/NodeJS-Keyc
 */
 
 var	express = require('express'),
-		app = express.createServer(
-			//express.cache(),
-			express.staticProvider(__dirname + '/static'),
-			express.bodyDecoder()
-		),
+		app = express.createServer(),
 		mongoose = require('mongoose').Mongoose,
 		db = mongoose.connect('mongodb://localhost/password')
 		fn = require('./functions.js'),
@@ -55,7 +51,7 @@ function defined(val){
 
 function login(req, res, msg){
 	if(!msg){
-		msg = '';
+		msg = 'Please provide parameters user, pass & domain';
 	}
 	res.send({action: 'login', msg: msg});
 }

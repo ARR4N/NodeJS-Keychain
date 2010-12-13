@@ -20,7 +20,7 @@ This file is part of NodeJS-Keychain (https://github.com/aschlosberg/NodeJS-Keyc
 */
 
 var	fn = require('../functions.js'),
-		hash = fn.hash
+		hash = fn.hash,
 		crypto = require('crypto');
 
 exports.model = {
