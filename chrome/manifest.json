@@ -1,0 +1,53 @@
+/*
+
+Copyright 2010 Arran Schlosberg (http://arranschlosberg.com);
+
+This file is part of NodeJS-Keychain (https://github.com/aschlosberg/NodeJS-Keychain).
+
+    NodeJS-Keychain is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    NodeJS-Keychain is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with NodeJS-Keychain.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+{
+  "name" : "Keychain",
+  "version" : "1.0",
+  "description" : "Generates and stores very long, random passwords that are encrypted with a single master password",
+  "background_page" : "background.html",
+  "page_action" :
+  {
+    "default_icon" : "keychain-19.png",
+    "default_title" : "Keychain",
+    "default_popup" : "popup.html"
+  },
+  "content_scripts" : [
+    {
+      "matches" : [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js" : ["contentscript.js"],
+      "run_at" : "document_idle",
+      "all_frames" : false
+    }
+  ],
+  "icons" : {
+    "48" : "keychain-48.png",
+    "128" : "keychain-128.png"
+  },
+  "permissions": [
+    "tabs",
+    "http://localhost/*"
+  ],
+  "homepage_url": "https://github.com/aschlosberg/NodeJS-Keychain"
+}

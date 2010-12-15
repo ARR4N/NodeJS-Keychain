@@ -1,0 +1,148 @@
+<!--
+
+Copyright 2010 Arran Schlosberg (http://arranschlosberg.com);
+
+This file is part of NodeJS-Keychain (https://github.com/aschlosberg/NodeJS-Keychain).
+
+    NodeJS-Keychain is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    NodeJS-Keychain is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with NodeJS-Keychain.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+		<script>
+			$(function(){
+				var url = "http://localhost/";
+				
+				var defaultMsg = $('#msg').html();
+				
+				function form(msg){
+					if(!msg) msg = defaultMsg;
+					$('#working').hide();
+					$('#msg').html(msg);
+					$('#form').show();
+				}
+				
+				$('button').click(function(){
+				
+					$('#form').hide();
+					$('#working').show();
+
+					var user = $('#user').val();
+					var pass = $('#pass').val();
+					
+					chrome.tabs.getSelected(null, function(tab){
+	
+						var domain = tab.url.match(/^http(?:s?)\:\/\/(.*?)([$\/])/)[1];
+						
+						var www = domain.match(/^www\.(.*)$/);
+						if(www.length>1){
+							if(true || confirm('This domain starts with www & is likely to be identical to \''+www[1]+'\'. The www will be removed. Press \'Cancel\' to keep the www prefix.')){
+								domain = www[1];
+							}
+						}
+	
+						$.getJSON(url+'?user='+user+'&pass='+pass+'&domain='+domain, function(data, status){
+	
+							if(status!='success'){
+								$('#msg').html('An error occurred while contacting the server: '+status);
+								return;
+							}
+							
+							switch(data.action){
+								case 'login':
+									form(data.msg);
+									break;
+								case 'pass':
+									chrome.tabs.sendRequest(tab.id, {action: 'store', pass: data.pass}, function(res) {});
+									form('Your password has been loaded.');
+									break;
+								default:
+									form('The server sent an invalid command: '+data.action);
+									break;
+							}
+	
+						});
+					});
+					
+				});
+			});
+			
+		</script>
+		<style>
+			#form, #working {
+				width: 300px;
+				height: 14em;
+				font-size: 0.7em;
+				font-weight: bold;
+				color: #999;
+			}
+			
+			#form, #working, button {
+				font-family: Verdana, Arial, Sans;
+			}
+			
+			button {
+				float: right;
+				font-size: 1em;
+			}
+			
+				#working img {
+					position: relative;
+					top: 7em;
+					margin-top: -10px;
+				}
+				
+				#form p {
+					margin: 12px 0px;
+					float: none;
+					clear: both;
+				}
+				
+					#form p label {
+						display: block;
+					}
+					
+					#form p input {
+						width: 100%;
+					}
+		</style>
+	</head>
+	<body>
+	
+		<div id="form">
+			<p id="msg">Please provide your master password</p>
+			
+			<p>
+				<label>Username</label>
+				<input id="user" name="user" />
+			</p>
+			
+			<p>
+				<label>Password</label>
+				<input id="pass" name="pass" type="password" />
+			</p>
+			
+			<p>
+				<button>Fetch password</button>
+			</p>
+		</div>
+		
+		<div id="working" style="display: none;">
+			<img src="working.gif" />
+		</div>
+
+	</body>
+</html>
