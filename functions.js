@@ -29,7 +29,7 @@ String.prototype.chomp = function () {
     return this.substr(0).replace(/(\n|\r)+$/, '');
 };
 
-exports.hash = function(v){
+exports.hash = v => {
 	var hash = crypto.createHash('sha512');
 	hash.update(v);
 	return hash.digest('base64');

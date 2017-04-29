@@ -31,7 +31,7 @@ exports.model = {
 
     setters : {
     	id : hash,
-    	pass : function(v){
+    	pass(v) {
     		this.salt = hash(new Date() + Math.random().toString());
     		return this.hashPassword(v);
     	}
@@ -40,16 +40,16 @@ exports.model = {
     getters : {},
 
     methods : {
-    	hashPassword : function(pass){
+    	hashPassword(pass) {
     		return hash(this.id+'|'+pass+'|'+this.salt);
     	},
-    	checkPassword : function(pass){
+    	checkPassword(pass) {
     		return this.hashPassword(pass) == this.pass;
     	}
     },
 
     static : {
-    	get : function(db, id, cb){
+    	get(db, id, cb) {
     		db.User.find({id: hash(id)}).first(cb);
     	}
     }
