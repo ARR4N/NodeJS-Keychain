@@ -19,9 +19,10 @@ This file is part of NodeJS-Keychain (https://github.com/aschlosberg/NodeJS-Keyc
 
 */
 
-var	fn = require('../functions.js'),
-		hash = fn.hash,
-		crypto = require('crypto');
+var fn = require('../functions.js');
+
+var hash = fn.hash;
+var crypto = require('crypto');
 
 exports.model = {
 
@@ -32,18 +33,18 @@ exports.model = {
     indexes : ['user', 'domain'],
 
     setters : {
-    	user : function(v){
+    	user(v) {
     		this.user_set = v.length>0;
     		return hash(v);
     	},
-    	domain : function(v){
+    	domain(v) {
     		if(this.user_set!==true){
     			throw "When working with an encrypted password set user before setting domain";
     		}
     		this.domain_set = v.length>0;
     		return hashDomain(this.user, v);
     	},
-    	pass : function(v){ //[user_pass, domain_pass]
+    	pass(v) { //[user_pass, domain_pass]
 			this.checkCipherRequirements(v);
     		
     		var key = hash(v[0]+'|'+this.user+'|'+this.domain);
@@ -57,7 +58,7 @@ exports.model = {
     getters : {},
 
     methods : {
-    	checkCipherRequirements : function(v){
+    	checkCipherRequirements(v) {
 			this.checkDecipherRequirements();
     		if(typeof v != 'object'){
     			throw "When working with an encrypted password pass an array of user_pass & domain_pass";
@@ -69,12 +70,12 @@ exports.model = {
     			throw "When working with an encrypted password you must pass the domain_pass as the second parameter";
     		}
     	},
-    	checkDecipherRequirements : function(){
+    	checkDecipherRequirements() {
     		if(this.domain_set!==true){
     			throw "When working with an encrypted password set domain before setting or getting password";
     		}
     	},
-    	getPass : function(user_pass){
+    	getPass(user_pass) {
 			this.checkDecipherRequirements();
     		
     		var key = hash(user_pass+'|'+this.user+'|'+this.domain);
@@ -86,12 +87,12 @@ exports.model = {
     },
 
     static : {
-    	hashDomain : hashDomain,
-    	get : function(db, user, domain, cb){
+    	hashDomain,
+    	get(db, user, domain, cb) {
     		var user = hash(user);
     		var domain = hashDomain(user, domain);
     		
-    		db.Pass.find({user: user, domain: domain}).first(cb);
+    		db.Pass.find({user, domain}).first(cb);
     	}
     }
 

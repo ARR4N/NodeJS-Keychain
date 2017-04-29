@@ -26,7 +26,7 @@ for(var i in inputs){
 	try {
 		if(inputs[i].type.toLowerCase()=='password'){
 			if(!foundInputs){
-				chrome.extension.sendRequest({action: 'show'}, function(res) {});
+				chrome.extension.sendRequest({action: 'show'}, res => {});
 			}
 			foundInputs = true;
 		}

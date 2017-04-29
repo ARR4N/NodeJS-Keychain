@@ -19,12 +19,13 @@ This file is part of NodeJS-Keychain (https://github.com/aschlosberg/NodeJS-Keyc
 
 */
 
-var	express = require('express'),
-		app = express.createServer(),
-		mongoose = require('mongoose').Mongoose,
-		db = mongoose.connect('mongodb://localhost/password')
-		fn = require('./functions.js'),
-		hash = fn.hash;
+var express = require('express');
+
+var app = express.createServer();
+var mongoose = require('mongoose').Mongoose;
+var db = mongoose.connect('mongodb://localhost/password');
+fn = require('./functions.js'),
+hash = fn.hash;
 
 //Add Mongoose models and make them available through db.Model-name
 var models = ['user', 'pass'];
@@ -37,7 +38,7 @@ for(var m in models){
 	db[name] = db.model(name);
 }
 
-app.get('/', function(req, res){
+app.get('/', (req, res) => {
 	if(!defined(req.param('user')) || !defined(req.param('pass')) || !defined(req.param('domain'))){
 		login(req, res);
 	}
@@ -54,7 +55,7 @@ function login(req, res, msg){
 	if(!msg){
 		msg = 'Please provide parameters user, pass & domain';
 	}
-	res.send({action: 'login', msg: msg});
+	res.send({action: 'login', msg});
 }
 
 function getPass(req, res){
@@ -63,12 +64,12 @@ function getPass(req, res){
 	var domain = req.param('domain');
 	
 	//Finds and returns the first record with the user_id provided - using the return value when nothing is found throws errors so that is used as a check for no user found
-	db.User.get(db, user, function(u){
+	db.User.get(db, user, u => {
 		try {
 			if(!u.checkPassword(pass)) throw 0; //will also throw if u is null/undefined
 			
 			//Same idea as db.User.get
-			db.Pass.get(db, user, domain, function(p){
+			db.Pass.get(db, user, domain, p => {
 				try {
 					sendPass(req, res, p.getPass(pass));
 				}
@@ -82,7 +83,7 @@ function getPass(req, res){
 						
 						p.pass = [pass, domain_pass];
 						
-						p.save(function(){
+						p.save(() => {
 							sendPass(req, res, domain_pass);
 						});
 					}
@@ -99,7 +100,7 @@ function getPass(req, res){
 }
 
 function sendPass(req, res, pass){
-	res.send({action: 'pass', pass: pass});
+	res.send({action: 'pass', pass});
 }
 
 app.listen(80);
